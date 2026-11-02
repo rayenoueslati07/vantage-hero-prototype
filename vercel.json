@@ -1,0 +1,12 @@
+{
+  "cleanUrls": false,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/api/config.php", "destination": "/api/config.json" },
+    { "source": "/(hakkimizda|proje|mimarlar|avantajlar|galeri|planlar|iletisim|kvkk)", "destination": "/index.html" }
+  ],
+  "headers": [
+    { "source": "/img/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }] },
+    { "source": "/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }] }
+  ]
+}

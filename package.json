@@ -1,0 +1,13 @@
+{
+  "name": "vantage-hero-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Vantage Office – interactive 2.5D homepage hero prototype (local demo)",
+  "scripts": {
+    "start": "node serve.js",
+    "record": "node tools/record-demo.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.1"
+  }
+}
