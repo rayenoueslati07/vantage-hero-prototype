@@ -8,9 +8,9 @@
  * ---------------------------------------------------------------*/
 import {
   BRAND, PROJECT, BLOCKS, BLOCK_ORDER, ANGLES, TIMES, PLAN_IMG, PLAN_RATIO, PLAN_CORE, UNIT_LAYOUT, COMBINATIONS,
-  STATUS, unitsOf, floorInfo, floorsOf, totals, findUnit, AMENITIES, PLACES, SITE_POS,
+  STATUS, unitsOf, floorInfo, floorsOf, totals, findUnit, AMENITIES, PLACES, MAP,
   DESIGN_POINTS, GALLERY, INTERIORS,
-} from './data.js?v=6';
+} from './data.js?v=7';
 
 const gsap = window.gsap;
 const hero = document.getElementById('vtHero');
@@ -744,30 +744,17 @@ function renderAmenities() {
 
 /* ---------------- NEIGHBORHOOD ---------------- */
 function renderNeighborhood() {
-  const [sx, sy] = SITE_POS;
-  const P = (x, y) => `${(x * 100).toFixed(1)},${(y * 70).toFixed(1)}`;
+  const [sx, sy] = MAP.site;   // the client's map image; the SVG on top only draws the hover highlight
   pageEl.innerHTML = h`
     ${header({ eyebrow: 'Konum', title: 'Çankaya, Ankara', sub: `Eskişehir Yolu ile Sakıp Sabancı Bulvarı arasında · ${brandNote}` })}
     <div class="alt-nb alt-anim">
       <div class="alt-map">
-        <svg viewBox="0 0 100 70" preserveAspectRatio="xMidYMid meet">
-          <rect class="land" x="0" y="0" width="100" height="70"/>
-          <path class="green" d="M0 54 Q 14 50 26 60 T 46 70 L 0 70 Z"/>
-          <path class="green" d="M12 0 Q 26 14 20 30 Q 10 36 0 30 L 0 0 Z"/>
-          <path class="road major" d="M-2 58 C 25 52 50 50 102 46"/>
-          <path class="road" d="M-2 30 C 30 28 60 26 102 20"/>
-          <path class="road" d="M46 10 C 44 30 48 44 44 70"/>
-          <path class="road thin" d="M24 32 L 30 56"/>
-          <path class="road thin" d="M70 22 C 72 36 68 44 70 68"/>
-          <text class="rl" x="60" y="49.5" transform="rotate(-3 60 49.5)">ESKİŞEHİR YOLU</text>
-          <text class="rl" x="62" y="22" transform="rotate(-3 62 22)">SAKIP SABANCI BULVARI</text>
-          <text class="rl v" x="47" y="40" transform="rotate(90 47 40)">2082. CADDE</text>
-          ${PLACES.map(p => `<line class="link" data-id="${p.id}" x1="${sx * 100}" y1="${sy * 70}" x2="${p.pos[0] * 100}" y2="${p.pos[1] * 70}"/>`).join('')}
-          ${PLACES.map(p => `<g class="place" data-id="${p.id}"><circle cx="${p.pos[0] * 100}" cy="${p.pos[1] * 70}" r="1.1"/><text x="${p.pos[0] * 100 + (p.edge ? -1.6 : 1.8)}" y="${p.pos[1] * 70 - 1.6}" text-anchor="${p.edge ? 'end' : 'start'}">${p.name}</text><text class="mn" x="${p.pos[0] * 100 + (p.edge ? -1.6 : 1.8)}" y="${p.pos[1] * 70 + 2.2}" text-anchor="${p.edge ? 'end' : 'start'}">${p.min} dk</text></g>`).join('')}
-          <g class="site"><circle cx="${sx * 100}" cy="${sy * 70}" r="4" class="halo"/><circle cx="${sx * 100}" cy="${sy * 70}" r="1.6"/><text x="${sx * 100}" y="${sy * 70 - 3.4}" text-anchor="middle">VANTAGE</text></g>
-          <g class="compass"><circle cx="6" cy="6" r="3.2"/><path d="M6 3.4 L7 6.4 L6 5.8 L5 6.4 Z"/><text x="6" y="12.5" text-anchor="middle">K</text></g>
+        <img class="alt-map-img" src="${MAP.src}" alt="Vantage konum haritası: Eskişehir Yolu, Sakıp Sabancı Bulvarı ve çevredeki merkezler">
+        <svg viewBox="0 0 ${MAP.w} ${MAP.h}" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+          <circle class="halo" cx="${sx}" cy="${sy}" r="30"/>
+          ${PLACES.map(p => `<line class="link" data-id="${p.id}" x1="${sx}" y1="${sy}" x2="${p.pin[0]}" y2="${p.pin[1]}"/>`).join('')}
+          ${PLACES.map(p => `<g class="place" data-id="${p.id}"><circle class="ring" cx="${p.pin[0]}" cy="${p.pin[1]}" r="17"/><circle class="hit" cx="${p.pin[0]}" cy="${p.pin[1]}" r="44"/></g>`).join('')}
         </svg>
-        <span class="alt-map-note">Şematik harita · ölçeksiz</span>
       </div>
       <div class="alt-nb-side">
         <p class="alt-text">Ankara'nın batı aksında, Söğütözü–Eskişehir Yolu hattında; bakanlıklar, üniversiteler ve büyük şirketlerle çevrili güçlü iş ekosisteminin içinde. Metroya ve ana arterlere birkaç dakika mesafede.</p>

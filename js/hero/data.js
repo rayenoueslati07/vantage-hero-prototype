@@ -252,18 +252,19 @@ export const AMENITIES = [
     images: [['img/galeri/galeri-08.jpg', 'Otopark girişi'], ['img/galeri/galeri-01.jpg', 'Cadde cephesi']] },
 ];
 
-/* ---------- Neighborhood (schematic map, approximate drive times · demo) ---------- */
+/* ---------- Neighborhood (client's schematic map, approximate drive times · demo) ----------
+ * pin = dot centre on the map image in image pixels (measured), used for the hover highlight. */
+export const MAP = { src: 'img/hero/konum-harita.webp', w: 1287, h: 1222, site: [579.7, 653.0] };
 export const PLACES = [
-  { id: 'kentpark', name: 'Kentpark AVM', min: 2, pos: [0.70, 0.60] },
-  { id: 'cepa', name: 'Cepa AVM', min: 3, pos: [0.84, 0.62] },
-  { id: 'metro', name: 'Söğütözü Metro', min: 4, pos: [0.56, 0.80] },
-  { id: 'bakanlik', name: 'Bakanlıklar · EPDK', min: 3, pos: [0.30, 0.40] },
-  { id: 'odtu', name: 'ODTÜ', min: 7, pos: [0.22, 0.86] },
-  { id: 'bilkent', name: 'Bilkent', min: 10, pos: [0.08, 0.58] },
-  { id: 'kizilay', name: 'Kızılay', min: 15, pos: [0.95, 0.84], edge: true },
-  { id: 'esenboga', name: 'Esenboğa Havalimanı', min: 35, pos: [0.90, 0.10], edge: true },
+  { id: 'kentpark', name: 'Kentpark AVM', min: 2, pin: [875.0, 697.8] },
+  { id: 'cepa', name: 'Cepa AVM', min: 3, pin: [1062.2, 709.4] },
+  { id: 'metro', name: 'Söğütözü Metro', min: 4, pin: [701.3, 874.9] },
+  { id: 'bakanlik', name: 'Bakanlıklar · EPDK', min: 3, pin: [381.0, 523.7] },
+  { id: 'odtu', name: 'ODTÜ', min: 7, pin: [282.3, 925.8] },
+  { id: 'bilkent', name: 'Bilkent', min: 10, pin: [109.1, 681.9] },
+  { id: 'kizilay', name: 'Kızılay', min: 15, pin: [1192.3, 910.7] },
+  { id: 'esenboga', name: 'Esenboğa Havalimanı', min: 35, pin: [1134.6, 266.1] },
 ];
-export const SITE_POS = [0.46, 0.55];
 
 /* ---------- Design ---------- */
 export const DESIGN_POINTS = [
