@@ -35,25 +35,27 @@ Open **http://localhost:5173** in Chrome or Edge at ≥ 1280 px width (desktop o
 | (client request) pick floors on the building itself | Hover any visible floor on the render → it highlights following the facade; click → selected (gold), sidebar row and info tooltip follow; click again or **Katı aç** → floor plan |
 | Day / sunset / night, rotate camera angles | Gündüz · Altın saat · Gece; 6 camera angles (aerial, top-down, street, plaza, boulevard, close-up) |
 | Click floor → floor plan page (cream plan card + unit table) | Catalogue B-block full-floor plan, hover-linked table, sample prices |
-| Click unit → residence page (hero, key facts, plan 2D, view, interiors, book) | Office page with the same sections and the site's own "Bilgi Formu" modal as CTA |
+| Click unit → residence page (hero, key facts, plan 2D, view, interiors, book) | Office page with the same sections (minus the view) and the site's own "Bilgi Formu" modal as CTA |
 | Stacking plan (4 columns of cells, legend, filters, side panel) | Yerleşim planı: 320 cells, status filters, unit panel |
-| Ride the elevator: big floor number, elevator slider, direction buttons, blur crossfade | Katınızdan manzara: real drone horizon in 4 directions, floor 1–8 |
 | Amenities by level: silhouette + list + image card + thumbnails → viewer | Kat kat olanaklar with gallery viewer |
 | Neighborhood: schematic map + drive times | Çankaya map (schematic) + drive times |
 | Design: diagram + numbered points | Yatay mimari diagram + 5 points |
 | Gallery grid → viewer | 53 site gallery images by category |
 
-Keyboard: `Esc` back/close, `←`/`→` rotate angle, `↑`/`↓` elevator.
+Keyboard: `Esc` back/close, `←`/`→` rotate angle.
+
+The reel's "ride the elevator / view from your floor" screen (*Katınızdan manzara*) was removed on 2026-11-03 at the
+client's request: the project is under construction, so floor views cannot be promised yet.
 
 ## Files
 
 ```
 index.html            site mirror; only the hero section inside <main> and 3 tags in <head>/<body> changed
 css/hero.css          all hero styling (site tokens + Cormorant Garamond for the reel's serif)
-js/hero/app.js        screens, camera/tooltip engine, elevator, stacking plan, viewer (vanilla ES module + GSAP)
+js/hero/app.js        screens, camera/tooltip engine, facade floor picking, stacking plan, viewer (vanilla ES module + GSAP)
 js/hero/data.js       angles with traced facade quads, blocks, catalogue floor plan, demo generators, copy
 js/hero/gsap.min.js   GSAP 3.12.5 (vendored)
-img/hero/             web-sized renders (6 angles × day/gold/night), drone horizon views, plans/
+img/hero/             web-sized renders (6 angles × day/gold/night), plans/
 img/galeri/           the live site's gallery (53 images)
 serve.js              zero-dependency static server (answers /api/config.php with {})
 tools/verify.js       Playwright screenshot pass → demo/shots/
@@ -81,8 +83,6 @@ node tools/record-demo.js    # videos → demo/
   buildings are the back pair C (left) and D (right); A/B are behind the camera. To be confirmed by the client – swapping
   is a label change in the `plaza` entry of `js/hero/data.js`.
 * **Golden-hour and night** exist as real renders only for the main aerial; the other angles are colour-graded.
-* **Horizon views** are frames from the client's drone orbit (hazy autumn day, construction site below the
-  frame line), not renders. The floor slider scales/shifts the same frame.
 * **Floor plan**: the catalogue only provides the B-block full-floor plan; it is reused for A/C/D.
 * **3D plan toggle** in the office page is present but disabled (no 3D plan asset).
 * **EN** language toggle is visual only.

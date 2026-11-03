@@ -1,5 +1,5 @@
 /* Records the desktop walkthrough in the same order as the reference reel
- * (landing → tower → floor → office → view → stacking → amenities → neighborhood → design → gallery → tower night).
+ * (landing → tower → floor → office → stacking → amenities → neighborhood → design → gallery → tower night).
  * Usage: node tools/record-demo.js   (server must be running on :5173)
  * Output: demo/vantage-hero-desktop.mp4 */
 const { chromium } = require('playwright');
@@ -87,16 +87,6 @@ async function scrollPage(page, top, ms = 1200) {
   await scrollPage(page, 2650, 1300);
   await glideClick(page, '.alt-int-tabs button:nth-child(2)', 300); await wait(page, 1400);
   await glideClick(page, '[data-int="kucuk"]', 300); await wait(page, 1400);
-
-  // 6 · ride the elevator (view from your floor)
-  await scrollPage(page, 2050, 900);
-  await glideClick(page, '.alt-office-view [data-act="view"]', 400);
-  await wait(page, 2200);
-  for (const f of [6, 7, 8]) { await page.evaluate(x => vtHero.setViewFloor(x), f); await wait(page, 900); }
-  for (const f of [4, 2]) { await page.evaluate(x => vtHero.setViewFloor(x), f); await wait(page, 1000); }
-  await glideClick(page, '.alt-dir[data-dir="D"]', 300); await wait(page, 1900);
-  await glideClick(page, '.alt-dir[data-dir="K"]', 300); await wait(page, 1900);
-  await page.evaluate(() => vtHero.setViewFloor(7)); await wait(page, 1200);
 
   // 7 · stacking plan
   await glideClick(page, '.alt-nav-item[data-nav="stacking"]', 300);

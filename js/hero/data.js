@@ -236,31 +236,19 @@ export function findUnit(code) {
   return unitsOf(m[1], Number(m[2])).find(u => u.no === Number(m[3])) || null;
 }
 
-/* ---------- View from your floor ---------- */
-export const DIRECTIONS = [
-  { id: 'G', label: 'Eskişehir Yolu', dir: 'Güney', img: 'view-g', caption: 'Eskişehir Yolu, Söğütözü kuleleri ve Ankara silüeti' },
-  { id: 'D', label: 'Kentpark', dir: 'Doğu', img: 'view-d', caption: 'Kentpark, Cepa ve Söğütözü iş aksı' },
-  { id: 'K', label: 'Bulvar', dir: 'Kuzey', img: 'view-k', caption: 'Sakıp Sabancı Bulvarı ve yeşil alan' },
-  { id: 'B', label: 'Bakanlıklar', dir: 'Batı', img: 'view-b', caption: 'Çevre ve Şehircilik Bakanlığı, EPDK ve ODTÜ ormanı' },
-];
-const SIDE_OF_DIR = { G: 'Güney', D: 'Doğu', K: 'Kuzey', B: 'Batı' };
-export function unitsFacing(block, floor, dirId) {
-  return unitsOf(block, floor).filter(u => u.side === SIDE_OF_DIR[dirId]);
-}
-
 /* ---------- Amenities by level ---------- */
 export const AMENITIES = [
-  { id: 'roof', level: 'Çatı', name: 'Yeşil çatı terası', desc: 'Ortak teras, kent ve meydan manzarası', count: '4 teras', slab: [9, 9],
+  { id: 'roof', level: 'Çatı', name: 'Çatı terası', desc: 'Kenti ve meydanı izleyen ortak teras.', count: '4 teras', slab: [9, 9],
     images: [['img/galeri/galeri-13.jpg', 'Çatı terası'], ['img/galeri/galeri-11.jpg', 'Blok cephesi'], ['img/galeri/galeri-06.jpg', 'Balkonlar']] },
-  { id: 'office', level: 'K1–8', name: 'Ofis katları', desc: '3,75 m tavan, her ofise balkon, natamam teslim', count: '320 ofis', slab: [1, 8],
+  { id: 'office', level: 'K1–8', name: 'Ofis katları', desc: '3,75 m tavan yüksekliği, balkonlu ofisler, natamam teslim.', count: '320 ofis', slab: [1, 8],
     images: [['img/galeri/tamkat-03.jpg', 'Tam kat ofis'], ['img/galeri/tamkat-01.jpg', 'Açık ofis'], ['img/galeri/kucuk-ofis-01.jpg', 'Küçük ofis']] },
-  { id: 'lobby', level: 'Zemin', name: 'Giriş lobisi', desc: 'Resepsiyon, 7/24 güvenlik, kontrollü geçiş', count: '4 lobi', slab: [0, 0],
+  { id: 'lobby', level: 'Zemin', name: 'Giriş lobisi', desc: 'Resepsiyon hizmeti, 7/24 güvenlik ve kontrollü giriş.', count: '4 lobi', slab: [0, 0],
     images: [['img/galeri/giris-01.jpg', 'Giriş holü'], ['img/galeri/giris-02.jpg', 'Resepsiyon'], ['img/galeri/koridor-01.jpg', 'Kat koridoru']] },
-  { id: 'plaza', level: 'Zemin', name: 'Meydan ve arkad', desc: 'Kafeler, restoranlar, su öğesi ve sahne', count: '123 mağaza', slab: [0, 0],
+  { id: 'plaza', level: 'Zemin', name: 'Meydan ve cadde', desc: 'Kafe, restoran ve açık hava buluşmalarının merkezi.', count: '123 mağaza', slab: [0, 0],
     images: [['img/hero/plaza.jpg', 'Meydan'], ['img/hero/plaza-cafe.jpg', 'Kafe terasları'], ['img/hero/arcade.jpg', 'Arkad'], ['img/hero/plaza-piano.jpg', 'Su öğesi ve sahne']] },
-  { id: 'b1', level: 'B1', name: 'Bodrum mağazaları', desc: '23 bağımsız ticari birim, servis erişimi', count: '23 birim', slab: [-1, -1],
+  { id: 'b1', level: 'B1', name: 'Bodrum mağazaları', desc: 'Birinci bodrumda 23 mağaza.', count: '23 mağaza', slab: [-1, -1],
     images: [['img/galeri/galeri-05.jpg', 'Cadde mağazaları'], ['img/galeri/galeri-07.jpg', 'Vitrinler']] },
-  { id: 'parking', level: 'B2–B3', name: 'Kapalı otopark', desc: 'Her ofise min. 2 araç, misafir otoparkı', count: '1.041 araç', slab: [-3, -2],
+  { id: 'parking', level: 'B2–B3', name: 'Kapalı otopark', desc: 'Her bağımsız bölüme 2 kapalı yer.', count: '1.041 araçlık', slab: [-3, -2],
     images: [['img/galeri/galeri-08.jpg', 'Otopark girişi'], ['img/galeri/galeri-01.jpg', 'Cadde cephesi']] },
 ];
 

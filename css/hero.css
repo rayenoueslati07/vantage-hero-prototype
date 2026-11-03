@@ -282,43 +282,6 @@
 .alt-urow .u-price { white-space: nowrap; font-weight: 500; }
 .alt-urow .u-face { color: rgba(255,255,255,0.8); font-size: 10.5px; }
 
-/* view from your floor */
-.alt-view { position: absolute; inset: 0; }
-.alt-page.is-view { padding-top: 0; }
-.alt-view-imgs { position: absolute; inset: 0; overflow: hidden; background: #0b1627; }
-.alt-view-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform-origin: 50% 62%; will-change: transform, opacity, filter; }
-.alt-view-img.is-active { opacity: 1; }
-.alt-view-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to bottom, rgba(6,13,24,0.72) 0%, rgba(6,13,24,0.1) 32%, rgba(6,13,24,0) 55%, rgba(6,13,24,0.7) 100%), linear-gradient(to right, rgba(6,13,24,0.5) 0%, rgba(6,13,24,0) 45%); }
-.alt-view .alt-ph { position: absolute; left: 0; right: 0; top: var(--alt-top); }
-.alt-view-floor { position: absolute; left: 60px; top: 36%; }
-.alt-bignum { font-family: var(--alt-serif); font-weight: 500; font-size: 210px; line-height: 0.82; color: #fff; margin: -4px 0 10px -6px; text-shadow: 0 10px 40px rgba(0,0,0,0.35); }
-.alt-bignum span { display: inline-block; }
-.alt-view-h { font-size: 13px; color: rgba(255,255,255,0.85); }
-.alt-view-floor em { display: block; font-family: var(--alt-serif); font-style: italic; font-size: 22px; color: #fff; margin-top: 2px; }
-.alt-elev { position: absolute; right: 96px; top: 200px; bottom: 150px; width: 44px; }
-.alt-elev-track { position: relative; height: 100%; width: 44px; cursor: ns-resize; touch-action: none; }
-.alt-elev-track::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,0.45); }
-.alt-elev-track i { position: absolute; left: 50%; width: 10px; height: 1px; background: rgba(255,255,255,0.55); transform: translateX(-50%); }
-.alt-elev-track i span { position: absolute; right: 18px; top: -7px; font-size: 10px; color: rgba(255,255,255,0.55); font-style: normal; transition: color 0.2s ease; }
-.alt-elev-track i.is-on span { color: #fff; font-weight: 600; }
-.alt-elev-track i:nth-child(1) { top: 0; } .alt-elev-track i:nth-child(2) { top: 14.2857%; } .alt-elev-track i:nth-child(3) { top: 28.5714%; } .alt-elev-track i:nth-child(4) { top: 42.8571%; }
-.alt-elev-track i:nth-child(5) { top: 57.1428%; } .alt-elev-track i:nth-child(6) { top: 71.4285%; } .alt-elev-track i:nth-child(7) { top: 85.7142%; } .alt-elev-track i:nth-child(8) { top: 100%; }
-.alt-elev-knob { position: absolute; left: 50%; width: 34px; height: 34px; border-radius: 50%; background: var(--alt-gold); color: #10182a; transform: translate(-50%, -50%); display: grid; place-items: center; box-shadow: 0 6px 20px rgba(0,0,0,0.45); transition: top 0.45s var(--alt-ease); }
-.alt-elev-knob b { font-size: 13px; font-weight: 700; }
-.alt-view-info { position: absolute; right: 168px; bottom: 60px; max-width: 420px; text-align: right; }
-.alt-view-cap { font-size: 12px; color: rgba(255,255,255,0.9); margin: 0 0 6px; line-height: 1.6; }
-.alt-view-n { font-size: 10.5px; letter-spacing: 0.06em; color: var(--alt-muted); margin: 0 0 8px; }
-.alt-view-chips { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-.alt-minichip { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 13px; background: rgba(12,24,40,0.75); border: 1px solid rgba(255,255,255,0.2); font-size: 10.5px; color: rgba(255,255,255,0.85); backdrop-filter: blur(8px); }
-.alt-minichip b { font-family: var(--alt-serif); font-size: 14px; font-weight: 600; color: #fff; }
-.alt-minichip svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2; }
-.alt-minichip:hover { border-color: var(--alt-gold); }
-.alt-dirs { position: absolute; left: 60px; bottom: 36px; display: flex; gap: 8px; }
-.alt-dir { display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px 0 4px; border-radius: 17px; background: rgba(12,24,40,0.7); border: 1px solid rgba(255,255,255,0.2); font-size: 11.5px; color: rgba(255,255,255,0.85); backdrop-filter: blur(8px); transition: background 0.25s ease, color 0.25s ease; }
-.alt-dir i { width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.12); display: grid; place-items: center; font-style: normal; font-size: 10px; font-weight: 700; }
-.alt-dir.is-active { background: #fff; color: #10182a; }
-.alt-dir.is-active i { background: #10182a; color: #fff; }
-
 /* stacking plan */
 .alt-stack { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding: 0 var(--alt-right) 28px 28px; }
 .alt-stack-col { background: rgba(255,255,255,0.03); border: 1px solid var(--alt-line); border-radius: 12px; padding: 10px 10px 8px; }
@@ -401,10 +364,6 @@
 .alt-combos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 .alt-combos span { display: inline-flex; flex-direction: column; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid var(--alt-line); font-size: 11px; color: var(--alt-muted); }
 .alt-combos b { font-family: var(--alt-serif); font-size: 15px; color: #fff; font-weight: 600; }
-.alt-office-view { position: relative; border-radius: 14px; overflow: hidden; aspect-ratio: 21 / 9; margin-top: 14px; }
-.alt-office-view img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.alt-office-view-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 50px 24px 20px; background: linear-gradient(to top, rgba(6,13,24,0.85), rgba(6,13,24,0)); display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
-.alt-office-view-cap p { margin: 0; font-size: 12px; max-width: 560px; }
 .alt-interior { position: relative; border-radius: 14px; overflow: hidden; aspect-ratio: 16 / 8; margin-top: 14px; }
 .alt-interior img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .alt-int-ui { position: absolute; left: 0; right: 0; bottom: 0; padding: 60px 24px 20px; background: linear-gradient(to top, rgba(6,13,24,0.9), rgba(6,13,24,0)); }
@@ -540,7 +499,6 @@
 /* ---------- small desktop ---------- */
 @media (max-width: 1280px) {
   .alt-wordmark { font-size: 96px; }
-  .alt-bignum { font-size: 170px; }
   .alt-gal-grid { grid-template-columns: repeat(4, 1fr); }
   .alt-stack-row .cells { gap: 2px; }
   .alt-cell small { display: none; }

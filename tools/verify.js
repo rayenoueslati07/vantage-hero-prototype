@@ -43,16 +43,6 @@ const shot = (p, name) => p.screenshot({ path: `${OUT}/${name}.png` });
   await wait(page, 400);
   await shot(page, 'r05-floor-hover');
 
-  await page.click('.alt-floor-side [data-act="view"]');
-  await wait(page, 1800);
-  await shot(page, 'r06-view');
-  await page.evaluate(() => vtHero.setViewFloor(8));
-  await wait(page, 1200);
-  await shot(page, 'r07-view-f8');
-  await page.click('.alt-dir[data-dir="D"]');
-  await wait(page, 1600);
-  await shot(page, 'r08-view-dir');
-
   await page.click('.alt-nav-item[data-nav="stacking"]');
   await wait(page, 1500);
   await shot(page, 'r09-stacking');

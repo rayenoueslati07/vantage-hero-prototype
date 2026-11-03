@@ -1,16 +1,16 @@
 /* Vantage Office – reel-faithful interactive hero
  * ---------------------------------------------------------------
  * Screens (mirroring the reference reel): landing → tower (floor stack,
- * floor tooltip, day/golden/night, camera angles) → floor plan → view from
- * your floor (elevator) → stacking plan → office page → amenities by level →
- * neighborhood → design → gallery.
+ * floor tooltip, day/golden/night, camera angles) → floor plan → stacking
+ * plan → office page → amenities by level → neighborhood → design → gallery.
+ * (The reel's "view from your floor" screen was removed at the client's request.)
  * Vanilla ES module + GSAP. Desktop presentation build.
  * ---------------------------------------------------------------*/
 import {
   BRAND, PROJECT, BLOCKS, BLOCK_ORDER, ANGLES, TIMES, PLAN_IMG, PLAN_RATIO, PLAN_CORE, UNIT_LAYOUT, COMBINATIONS,
-  STATUS, unitsOf, floorInfo, floorsOf, totals, findUnit, DIRECTIONS, unitsFacing, AMENITIES, PLACES, SITE_POS,
+  STATUS, unitsOf, floorInfo, floorsOf, totals, findUnit, AMENITIES, PLACES, SITE_POS,
   DESIGN_POINTS, GALLERY, INTERIORS,
-} from './data.js?v=4';
+} from './data.js?v=5';
 
 const gsap = window.gsap;
 const hero = document.getElementById('vtHero');
@@ -25,7 +25,6 @@ const h = String.raw;
 const I = {
   tower: '<svg viewBox="0 0 24 24"><path d="M6 21V5l6-2 6 2v16"/><path d="M3 21h18M9 9h2M13 9h2M9 13h2M13 13h2M9 17h2M13 17h2"/></svg>',
   grid: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>',
-  view: '<svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
   star: '<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>',
   pin: '<svg viewBox="0 0 24 24"><path d="M12 22s7-7.1 7-12a7 7 0 0 0-14 0c0 4.9 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>',
   design: '<svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="8"/></svg>',
@@ -40,7 +39,6 @@ const I = {
   stack: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="4"/><rect x="4" y="10" width="16" height="4"/><rect x="4" y="16" width="16" height="4"/></svg>',
   close: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
   arrow: '<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
-  elev: '<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M12 3v18M8 9l1.5-2 1.5 2M8 15l1.5 2 1.5-2"/></svg>',
   phone: '<svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>',
   mail: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
   shop: '<svg viewBox="0 0 24 24"><path d="M4 10l1-5h14l1 5M4 10v10h16V10M4 10h16M10 20v-6h4v6"/></svg>',
@@ -50,7 +48,7 @@ const I = {
 };
 
 const NAV = [
-  ['tower', 'Bloklar', I.tower], ['stacking', 'Ofisler', I.grid], ['view', 'Manzara', I.view], ['amenities', 'Olanaklar', I.star],
+  ['tower', 'Bloklar', I.tower], ['stacking', 'Ofisler', I.grid], ['amenities', 'Olanaklar', I.star],
   ['neighborhood', 'Konum', I.pin], ['design', 'Tasarım', I.design], ['gallery', 'Galeri', I.gallery],
 ];
 
@@ -60,7 +58,6 @@ const S = {
   angle: 0, time: 'day',
   hover: null, sel: null,            // {block, floor}
   filters: { available: true, reserved: true, sold: true },
-  view: { block: 'A', floor: 5, dir: 'G' },
   stackSel: null, unit: null,
   amenity: 'plaza', gallery: 'dis', interior: 'tamkat',
 };
@@ -386,7 +383,7 @@ function applyFilters() {
 
 /* ------------------------------------------------------------------ screens */
 function setNav(screen) {
-  const map = { floor: 'tower', office: 'stacking', view: 'view' };
+  const map = { floor: 'tower', office: 'stacking' };
   const active = map[screen] || screen;
   hero.querySelectorAll('.alt-nav-item').forEach(b => b.classList.toggle('is-active', b.dataset.nav === active));
 }
@@ -430,7 +427,7 @@ function go(screen, params = {}) {
 }
 
 function back() {
-  const parent = { floor: 'tower', view: 'tower', stacking: 'tower', office: 'stacking', amenities: 'tower', neighborhood: 'tower', design: 'tower', gallery: 'tower' };
+  const parent = { floor: 'tower', stacking: 'tower', office: 'stacking', amenities: 'tower', neighborhood: 'tower', design: 'tower', gallery: 'tower' };
   const p = parent[S.screen] || 'tower';
   if (p === 'tower' && S.sel) go('tower', { ...S.sel });
   else go(p);
@@ -521,7 +518,6 @@ function renderFloor({ block, floor }) {
           </tbody>
         </table>
         <div class="alt-actions alt-anim">
-          <button class="alt-pill" data-act="view" data-block="${block}" data-floor="${floor}">${I.view}<span>${floor}. kattan manzara</span></button>
           <button class="alt-pill" data-act="show-tower" data-block="${block}" data-floor="${floor}">${I.tower}<span>Binada göster</span></button>
         </div>
         ${bookCard()}
@@ -539,83 +535,6 @@ function renderFloor({ block, floor }) {
     el.addEventListener('click', open);
     el.addEventListener('keydown', e => { if (e.key === 'Enter') open(); });
   });
-}
-
-/* ---------------- VIEW FROM YOUR FLOOR ---------------- */
-function renderView(params) {
-  Object.assign(S.view, params.block ? { block: params.block, floor: params.floor } : {}, params.dir ? { dir: params.dir } : {});
-  const v = S.view;
-  pageEl.innerHTML = h`
-    <div class="alt-view">
-      <div class="alt-view-imgs">${DIRECTIONS.map(d => `<img class="alt-view-img${d.id === v.dir ? ' is-active' : ''}" data-dir="${d.id}" src="img/hero/${d.img}.jpg" alt="">`).join('')}</div>
-      <div class="alt-view-shade"></div>
-      ${header({ eyebrow: 'Asansöre binin', title: 'Katınızdan manzara' })}
-      <div class="alt-view-floor alt-anim">
-        <span class="alt-eyebrow">Kat</span>
-        <div class="alt-bignum"><span id="altBigNum">${v.floor}</span></div>
-        <div class="alt-view-h" id="altHeight"></div>
-        <em id="altBlockLbl"></em>
-      </div>
-      <div class="alt-elev alt-anim" id="altElev">
-        <div class="alt-elev-track">${[8, 7, 6, 5, 4, 3, 2, 1].map(f => `<i data-f="${f}"><span>${f}</span></i>`).join('')}<div class="alt-elev-knob"><b id="altKnob">${v.floor}</b></div></div>
-      </div>
-      <div class="alt-view-info alt-anim" id="altViewInfo"></div>
-      <div class="alt-dirs alt-anim">${DIRECTIONS.map(d => `<button class="alt-dir${d.id === v.dir ? ' is-active' : ''}" data-dir="${d.id}"><i>${d.id}</i><span>${d.label}</span></button>`).join('')}</div>
-    </div>`;
-  updateView(false);
-
-  // elevator drag
-  const track = pageEl.querySelector('.alt-elev-track');
-  let dragging = false;
-  const pick = e => {
-    const r = track.getBoundingClientRect();
-    const t = clamp((e.clientY - r.top) / r.height, 0, 1);
-    const f = clamp(Math.round(8 - t * 7), 1, 8);
-    if (f !== S.view.floor) { S.view.floor = f; updateView(true); }
-  };
-  track.addEventListener('pointerdown', e => { dragging = true; track.setPointerCapture(e.pointerId); pick(e); });
-  track.addEventListener('pointermove', e => { if (dragging) pick(e); });
-  track.addEventListener('pointerup', () => { dragging = false; });
-  track.addEventListener('pointercancel', () => { dragging = false; });
-  pageEl.querySelectorAll('.alt-dir').forEach(b => b.addEventListener('click', () => setDir(b.dataset.dir)));
-}
-function updateView(animate) {
-  const v = S.view;
-  const f = floorInfo(v.block, v.floor);
-  const d = DIRECTIONS.find(x => x.id === v.dir);
-  const num = pageEl.querySelector('#altBigNum');
-  if (num) {
-    if (animate) gsap.fromTo(num, { y: 18, opacity: 0.2 }, { y: 0, opacity: 1, duration: 0.45, ease: 'power3.out' });
-    num.textContent = v.floor;
-  }
-  const kn = pageEl.querySelector('#altKnob'); if (kn) kn.textContent = v.floor;
-  const knob = pageEl.querySelector('.alt-elev-knob'); if (knob) knob.style.top = `${(8 - v.floor) / 7 * 100}%`;
-  pageEl.querySelectorAll('.alt-elev-track i').forEach(i => i.classList.toggle('is-on', Number(i.dataset.f) === v.floor));
-  const hh = pageEl.querySelector('#altHeight'); if (hh) hh.textContent = `≈ ${fmt(f.height).replace(',00', '')} m yükseklik`;
-  const bl = pageEl.querySelector('#altBlockLbl'); if (bl) bl.textContent = `${BLOCKS[v.block].name} · Ofis katı`;
-  // image: higher floor → wider, lower floor → closer
-  const s = 1 + (8 - v.floor) * 0.045, ty = (8 - v.floor) * 0.9;
-  pageEl.querySelectorAll('.alt-view-img').forEach(img => gsap.to(img, { scale: s, yPercent: ty, duration: animate ? 0.9 : 0, ease: 'power2.out' }));
-  const facing = unitsFacing(v.block, v.floor, v.dir);
-  const info = pageEl.querySelector('#altViewInfo');
-  if (info) info.innerHTML = h`
-    <p class="alt-view-cap">${d.caption}</p>
-    <p class="alt-view-n">${facing.length} ofis ${v.floor}. katta ${d.dir.toLowerCase()}e bakıyor</p>
-    <div class="alt-view-chips">${facing.slice(0, 3).map(u => `<button class="alt-minichip" data-act="office" data-code="${u.code}"><b>${u.short}</b>${u.type} ${I.right}</button>`).join('')}</div>
-    <button class="alt-pill" data-act="open-floor-page" data-block="${v.block}" data-floor="${v.floor}">${I.grid}<span>Bu kattaki ofisleri gör</span></button>`;
-  bindCommon(info);
-}
-function setDir(dir) {
-  if (dir === S.view.dir) return;
-  S.view.dir = dir;
-  pageEl.querySelectorAll('.alt-dir').forEach(b => b.classList.toggle('is-active', b.dataset.dir === dir));
-  const imgs = [...pageEl.querySelectorAll('.alt-view-img')];
-  const cur = imgs.find(i => i.classList.contains('is-active'));
-  const next = imgs.find(i => i.dataset.dir === dir);
-  // blur crossfade (as in the reel)
-  gsap.to(cur, { opacity: 0, filter: 'blur(18px)', duration: 0.5, ease: 'power2.in', onComplete: () => { cur.classList.remove('is-active'); gsap.set(cur, { filter: 'blur(0px)' }); } });
-  gsap.fromTo(next, { opacity: 0, filter: 'blur(18px)' }, { opacity: 1, filter: 'blur(0px)', duration: 0.9, ease: 'power2.out', delay: 0.25, onStart: () => next.classList.add('is-active') });
-  updateView(false);
 }
 
 /* ---------------- STACKING PLAN ---------------- */
@@ -671,7 +590,6 @@ function selectStack(code) {
     <div class="alt-miniplan"><img src="${PLAN_IMG}" alt="">${planOverlay(f.units, { hot: u.no, cls: 'is-mini' })}</div>
     <div class="alt-actions">
       <button class="alt-pill alt-pill-gold" data-act="office" data-code="${u.code}">${I.plan}<span>Ofis sayfasını aç</span></button>
-      <button class="alt-pill" data-act="view" data-block="${u.block}" data-floor="${u.floor}">${I.view}<span>${u.floor}. kattan manzara</span></button>
       <button class="alt-pill" data-act="show-tower" data-block="${u.block}" data-floor="${u.floor}">${I.tower}<span>Binada göster</span></button>
     </div>
     <button class="alt-cta" data-act="book">Sunum talep edin</button>`;
@@ -690,7 +608,6 @@ function renderOffice({ code }) {
   const f = floorInfo(u.block, u.floor);
   const interior = INTERIORS[S.interior];
   const heroImg = u.m2 >= 100 ? 'img/galeri/tamkat-03.jpg' : 'img/galeri/kucuk-ofis-01.jpg';
-  const dir = DIRECTIONS.find(d => d.dir === u.side) || DIRECTIONS[0];
   pageEl.innerHTML = h`
     <div class="alt-office">
       <div class="alt-office-hero">
@@ -706,7 +623,7 @@ function renderOffice({ code }) {
         <div class="alt-office-price alt-anim"><b>${money(u.price)}</b><div>${chip(u.status)}${sampleChip}</div><small>${money(u.perM2)}/m² · örnek</small></div>
       </div>
       <nav class="alt-subnav">
-        <a href="#ov" data-sec="ov" class="is-active">Genel bakış</a><a href="#plan" data-sec="plan">Plan</a><a href="#vw" data-sec="vw">Bu ofisten manzara</a><a href="#int" data-sec="int">İç mekân</a>
+        <a href="#ov" data-sec="ov" class="is-active">Genel bakış</a><a href="#plan" data-sec="plan">Plan</a><a href="#int" data-sec="int">İç mekân</a>
         <span class="alt-subnav-brand">${BRAND.tagline.toUpperCase()}</span>
         <button class="alt-cta" data-act="book">Sunum talep edin</button>
       </nav>
@@ -740,10 +657,6 @@ function renderOffice({ code }) {
         </div>
         <p class="alt-note">Katalog B Blok tam kat planı; seçili ofis vurgulanmıştır. Ölçeksiz, temsili.</p>
         <div class="alt-combos">${COMBINATIONS.map(c => `<span><b>${c.label || c.count + ' ofis'}</b>${fmt(c.m2)} m²</span>`).join('')}</div>
-      </section>
-      <section class="alt-sec" id="vw">
-        <h2 class="alt-h2">Bu ofisten manzara</h2>
-        <div class="alt-office-view"><img src="img/hero/${dir.img}.jpg" alt=""><div class="alt-office-view-cap"><p>${u.floor}. kattan ${dir.dir.toLowerCase()}e bakış: ${dir.caption}</p><button class="alt-pill" data-act="view" data-block="${u.block}" data-floor="${u.floor}" data-dir="${dir.id}">${I.elev}<span>Asansöre bin</span></button></div></div>
       </section>
       <section class="alt-sec" id="int">
         <h2 class="alt-h2">İç mekân</h2>
@@ -937,7 +850,7 @@ function renderGallery() {
   }));
 }
 
-const RENDER = { floor: renderFloor, view: renderView, stacking: renderStacking, office: renderOffice, amenities: renderAmenities, neighborhood: renderNeighborhood, design: renderDesign, gallery: renderGallery };
+const RENDER = { floor: renderFloor, stacking: renderStacking, office: renderOffice, amenities: renderAmenities, neighborhood: renderNeighborhood, design: renderDesign, gallery: renderGallery };
 
 /* keep the unit overlay aligned with the object-fit:contain plan image */
 function fitPlanOverlays(root) {
@@ -1006,7 +919,6 @@ function bindCommon(root) {
       switch (a) {
         case 'back': return back();
         case 'book': { const m = document.getElementById('vtBasvuruModal'); if (m) m.classList.add('active'); return; }
-        case 'view': return go('view', { block: d.block, floor: Number(d.floor), dir: d.dir });
         case 'open-floor-page': return go('floor', { block: d.block, floor: Number(d.floor) });
         case 'show-tower': return go('tower', { block: d.block, floor: Number(d.floor) });
         case 'office': return go('office', { code: d.code });
@@ -1073,7 +985,6 @@ hero.querySelectorAll('.alt-filters input').forEach(cb => cb.addEventListener('c
 hero.querySelectorAll('.alt-nav-item').forEach(b => b.addEventListener('click', () => {
   const id = b.dataset.nav;
   if (id === 'tower') go('tower', S.sel ? { ...S.sel } : {});
-  else if (id === 'view') go('view', S.sel ? { block: S.sel.block, floor: S.sel.floor } : {});
   else go(id);
 }));
 bindCommon(barEl);
@@ -1087,7 +998,6 @@ document.addEventListener('keydown', e => {
     if (S.sel) return clearSel();
   }
   if (S.screen === 'tower' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) setAngle(S.angle + (e.key === 'ArrowRight' ? 1 : -1), e.key === 'ArrowRight' ? 1 : -1);
-  if (S.screen === 'view' && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) { S.view.floor = clamp(S.view.floor + (e.key === 'ArrowUp' ? 1 : -1), 1, 8); updateView(true); }
 });
 document.addEventListener('click', e => { if (!e.target.closest('.alt-filters, [data-act="filters"]')) toggleFilters(false); });
 
@@ -1136,5 +1046,5 @@ function probeFloor(block, floor, avoid = null) {   // avoid = [left, top, right
   return ok.length ? ok[Math.floor(ok.length / 2)] : null;
 }
 
-window.vtHero = { S, go, back, enter, hoverFloor, selectFloor, openFloor, setAngle, setTime, setDir, selectStack, openViewer, closeViewer,
-  setViewFloor: f => { S.view.floor = f; updateView(true); }, clearSel, facadeHit, probeFloor };
+window.vtHero = { S, go, back, enter, hoverFloor, selectFloor, openFloor, setAngle, setTime, selectStack, openViewer, closeViewer,
+  clearSel, facadeHit, probeFloor };
