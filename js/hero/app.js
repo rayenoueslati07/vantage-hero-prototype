@@ -10,7 +10,7 @@ import {
   BRAND, PROJECT, BLOCKS, BLOCK_ORDER, ANGLES, TIMES, PLAN_IMG, PLAN_RATIO, PLAN_CORE, UNIT_LAYOUT, COMBINATIONS,
   STATUS, unitsOf, floorInfo, floorsOf, totals, findUnit, DIRECTIONS, unitsFacing, AMENITIES, PLACES, SITE_POS,
   DESIGN_POINTS, GALLERY, INTERIORS,
-} from './data.js?v=3';
+} from './data.js?v=4';
 
 const gsap = window.gsap;
 const hero = document.getElementById('vtHero');
@@ -292,7 +292,7 @@ function floorGeom(block, floor) {
   const top = y0 + (y1 - y0) * 0.16, bottom = y1;
   const yf = bottom - (floor - 0.5) / 8 * (bottom - top);
   point = [g.tip === 'right' ? x1 : x0, clamp(yf, 0.04, 0.96)];
-  return { point, polys: [], side: g.tip, hidden: a.id === 'topdown', behind, planView: a.id === 'topdown' };
+  return { point, polys: [], side: g.tip, hidden: a.id === 'topdown' || hidden, behind, planView: a.id === 'topdown' };
 }
 
 const sameFloor = (p, q) => !!p && !!q && p.block === q.block && p.floor === q.floor;

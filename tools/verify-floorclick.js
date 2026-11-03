@@ -14,7 +14,7 @@ const URL = process.env.URL || 'http://localhost:5173/';
 const OUT = path.join(__dirname, '..', 'demo', 'shots');
 fs.mkdirSync(OUT, { recursive: true });
 const ANGLE_IDS = ['aerial', 'topdown', 'frontal', 'plaza', 'road', 'closeup'];
-const TRACED = ['aerial', 'frontal', 'road', 'closeup'];
+const TRACED = ['aerial', 'frontal', 'plaza', 'road', 'closeup'];
 
 let fails = 0, checks = 0;
 const ok = (cond, msg) => { checks++; if (!cond) { fails++; console.log('  FAIL', msg); } };
@@ -113,12 +113,20 @@ const ok = (cond, msg) => { checks++; if (!cond) { fails++; console.log('  FAIL'
   ok(s.screen === 'tower' && s.sel && s.sel.block === 'C' && s.sel.floor === 6 && s.rowSel.join() === 'C6' && s.bands.includes('is-sel'), `back keeps C6 selected: ${JSON.stringify(s.sel)} ${s.rowSel}`);
 
   // 4 · selection survives angle changes (drawn where visible, tooltip note where not)
-  for (const angle of ['aerial', 'road', 'closeup', 'topdown']) {
+  for (const angle of ['aerial', 'plaza', 'road', 'closeup', 'topdown']) {
     await setAngle(angle);
     s = await state();
     ok(s.sel && s.sel.block === 'C' && s.sel.floor === 6 && s.rowSel.join() === 'C6', `${angle}: C6 still selected`);
     console.log(`  ${angle}: C6 band ${s.bands.includes('is-sel') ? 'drawn' : 'not drawn (not visible from here)'}`);
   }
+
+  // 4b · plaza: the front pair A/B is behind the camera → sidebar hover says so, no band
+  await setAngle('plaza');
+  await page.evaluate(() => vtHero.hoverFloor('A', 4)); await page.waitForTimeout(80);
+  s = await state();
+  const note = await page.evaluate(() => document.querySelector('.alt-tip em')?.textContent);
+  ok(!s.bands.includes('is-hover') && /görünmüyor/.test(note || ''), `plaza A4 via sidebar: no band, note "${note}"`);
+  await page.evaluate(() => vtHero.hoverFloor(null));
 
   // 5 · tooltip button opens the plan
   await setAngle('road');
@@ -137,7 +145,7 @@ const ok = (cond, msg) => { checks++; if (!cond) { fails++; console.log('  FAIL'
   ok(s.hover && s.hover.block === 'D' && s.hover.floor === 7 && s.bands.includes('is-hover'), 'sidebar hover still highlights the facade');
 
   // review shots: selected + hovered on each traced view
-  const shots = [['aerial', 'B', 6, 'A', 3], ['frontal', 'A', 4, 'B', 7], ['road', 'C', 5, 'A', 6], ['closeup', 'A', 2, 'A', 6]];
+  const shots = [['aerial', 'B', 6, 'A', 3], ['frontal', 'A', 4, 'B', 7], ['plaza', 'C', 3, 'D', 6], ['plaza', 'D', 8, 'C', 1], ['road', 'C', 5, 'A', 6], ['closeup', 'A', 2, 'A', 6]];
   for (const [angle, sb, sf, hb, hf] of shots) {
     await setAngle(angle);
     await page.evaluate(([b, f]) => vtHero.selectFloor(b, f), [sb, sf]);

@@ -81,11 +81,18 @@ export const ANGLES = [
     id: 'plaza', title: 'Meydandan', sub: 'Arkad ve kafe terasları', w: 2560, h: 1440, focal: [0.5, 0.55],
     src: { day: 'plaza', gold: 'plaza-gold', night: 'plaza-night' },
     blocks: {
-      A: { box: [0.0,-0.35,0.383,0.50], tip: 'right' },
-      B: { box: [0.64,-0.35,1.0,0.50], tip: 'left' },
-      C: { box: [0.0,-0.35,0.383,0.50], tip: 'right', behind: 'A' },
-      D: { box: [0.64,-0.35,1.0,0.50], tip: 'left', behind: 'B' },
+      /* Seen from inside the plaza looking north (west on the left): the two blocks are the back
+       * pair C (left) and D (right), with the podium bar and the park between them. The front pair
+       * A/B is behind the camera. Building tops are out of frame: floors are counted up from the
+       * arcade canopy (floor 1 partly behind it); floor 8 shows only on the receding side faces. */
+      C: { cols: [[0,-0.0976,0.6048],[0.298,-0.0976,0.6048],[0.312,-0.0702,0.6079],[0.33,0.0002,0.6157],[0.35,0.0785,0.6244],[0.365,0.1372,0.631],[0.38,0.1959,0.6375]], z: 1, tip: 'right', box: [0.0,-0.1,0.385,0.64] },
+      D: { cols: [[0.643,0.1842,0.6435],[0.655,0.1212,0.634],[0.67,0.0425,0.6222],[0.683,-0.0258,0.6119],[0.688,-0.052,0.6079],[0.702,-0.0888,0.6024],[1,-0.0888,0.6024]], z: 1, tip: 'left', box: [0.64,-0.1,1.0,0.64] },
+      A: { box: [0.0,-0.35,0.383,0.50], tip: 'right', hidden: [1, 2, 3, 4, 5, 6, 7, 8] },
+      B: { box: [0.64,-0.35,1.0,0.50], tip: 'left', hidden: [1, 2, 3, 4, 5, 6, 7, 8] },
     },
+    occluders: [
+      [[0,0.558],[1,0.558],[1,1],[0,1]],   // arcade canopy and shop fronts
+    ],
   },
   {
     id: 'road', title: 'Bulvardan', sub: 'Cadde mağazaları ve ofis katları', w: 2560, h: 1440, focal: [0.5, 0.5],

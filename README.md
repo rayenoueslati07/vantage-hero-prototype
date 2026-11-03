@@ -75,8 +75,11 @@ node tools/record-demo.js    # videos → demo/
 
 * **No 3D model.** Camera angles are the client's six renders; floors are perspective-mapped bands measured from the
   slab edges of each facade (`cols` in `js/hero/data.js`), with podium parapets as occluders. Direct floor picking works
-  in the four views with traced facades (Güneydoğudan, Caddeden, Bulvardan, Yakın plan); top-down and plaza keep the
-  sidebar-only selection. Floors hidden behind another block or a podium are not clickable and say so in the tooltip.
+  in five views (Güneydoğudan, Caddeden, Meydandan, Bulvardan, Yakın plan); the top-down plan view keeps sidebar-only
+  selection. Floors hidden behind another block or a podium are not clickable and say so in the tooltip.
+* **Meydandan (plaza) block identity** is read from the renders: the view looks north from inside the plaza, so the two
+  buildings are the back pair C (left) and D (right); A/B are behind the camera. To be confirmed by the client – swapping
+  is a label change in the `plaza` entry of `js/hero/data.js`.
 * **Golden-hour and night** exist as real renders only for the main aerial; the other angles are colour-graded.
 * **Horizon views** are frames from the client's drone orbit (hazy autumn day, construction site below the
   frame line), not renders. The floor slider scales/shifts the same frame.

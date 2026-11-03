@@ -97,9 +97,14 @@ async function btn(page, selector, steps = 20) {
   await to(page, 'A', 6, 10); await wait(page, 250); await click(page); await wait(page, 1300);
   await to(page, 'B', 3, 18); await wait(page, 300); await click(page); await wait(page, 1300);
 
+  // plaza (back pair C and D)
+  await btn(page, '.alt-angle [data-act="angle-next"]:last-of-type'); await wait(page, 1600);
+  await sweep(page, 'C', [6, 5, 4, 3], 330);
+  await to(page, 'C', 4, 10); await wait(page, 250); await click(page); await wait(page, 1300);
+  await to(page, 'D', 5, 18); await wait(page, 300); await click(page); await wait(page, 1300);
+
   // road
-  await btn(page, '.alt-angle [data-act="angle-next"]:last-of-type'); await wait(page, 1200);
-  await btn(page, '.alt-angle [data-act="angle-next"]:last-of-type', 6); await wait(page, 1500);
+  await btn(page, '.alt-angle [data-act="angle-next"]:last-of-type'); await wait(page, 1600);
   await sweep(page, 'B', [8, 6, 4], 330);
   await to(page, 'C', 5, 16); await wait(page, 300); await click(page); await wait(page, 1300);
   await to(page, 'A', 7, 16); await wait(page, 300); await click(page); await wait(page, 1300);
