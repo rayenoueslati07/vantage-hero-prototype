@@ -711,7 +711,7 @@ function renderAmenities() {
     slabs.push(`<rect class="${cls}${on ? ' is-on' : ''}" x="${f <= 0 ? 10 : 30}" y="${y}" width="${f <= 0 ? 100 : 60}" height="14" rx="3"/>`);
   }
   pageEl.innerHTML = h`
-    ${header({ eyebrow: `${BRAND.name} · ${BRAND.city}`, title: 'Kat kat olanaklar', sub: `Otoparktan çatı terasına · ${brandNote}` })}
+    ${header({ eyebrow: `${BRAND.name} · ${BRAND.city}`, title: 'Kat kat Vantage', sub: `Bodrumdan çatıya, katlarıyla Vantage Office · ${brandNote}` })}
     <div class="alt-amen alt-anim">
       <svg class="alt-amen-sil" viewBox="0 0 120 320">${slabs.join('')}</svg>
       <ul class="alt-amen-list">

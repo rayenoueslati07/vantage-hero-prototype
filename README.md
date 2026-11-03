@@ -37,7 +37,7 @@ Open **http://localhost:5173** in Chrome or Edge at ≥ 1280 px width (desktop o
 | Click floor → floor plan page (cream plan card + unit table) | Catalogue B-block full-floor plan, hover-linked table, sample prices |
 | Click unit → residence page (hero, key facts, plan 2D, view, interiors, book) | Office page with the same sections (minus the view) and the site's own "Bilgi Formu" modal as CTA |
 | Stacking plan (4 columns of cells, legend, filters, side panel) | Yerleşim planı: 320 cells, status filters, unit panel |
-| Amenities by level: silhouette + list + image card + thumbnails → viewer | Kat kat olanaklar with gallery viewer |
+| Amenities by level: silhouette + list + image card + thumbnails → viewer | Kat kat Vantage (amenities by level) with gallery viewer |
 | Neighborhood: schematic map + drive times | Çankaya map (schematic) + drive times |
 | Design: diagram + numbered points | Yatay mimari diagram + 5 points |
 | Gallery grid → viewer | 53 site gallery images by category |
