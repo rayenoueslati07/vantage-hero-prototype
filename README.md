@@ -9,6 +9,11 @@ replaced; the rest of the page is a byte-for-byte mirror of the live site.
 > times are **demo data**, flagged "ÖRNEK" in the interface. Block structure, floor plan, unit sizes,
 > shop and parking counts come from the Vantage catalogue and website.
 
+## Live links
+
+* **GitHub Pages (use this one):** https://rayenoueslati07.github.io/vantage-hero-prototype/ — redeploy with `git push` (public repo `rayenoueslati07/vantage-hero-prototype`).
+* Vercel copy: https://vantage-hero-lake.vercel.app (team rayen8) — `*.vercel.app` is blocked on some Turkish networks, so prefer the Pages link.
+
 ## Launch
 
 Requirements: Node.js 18+ (no build step, no external services).
