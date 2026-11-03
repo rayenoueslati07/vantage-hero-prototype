@@ -245,7 +245,7 @@ export const AMENITIES = [
   { id: 'lobby', level: 'Zemin', name: 'Giriş lobisi', desc: 'Resepsiyon hizmeti, 7/24 güvenlik ve kontrollü giriş.', count: '4 lobi', slab: [0, 0],
     images: [['img/galeri/giris-01.jpg', 'Giriş holü'], ['img/galeri/giris-02.jpg', 'Resepsiyon'], ['img/galeri/koridor-01.jpg', 'Kat koridoru']] },
   { id: 'plaza', level: 'Zemin', name: 'Meydan ve cadde', desc: 'Kafe, restoran ve açık hava buluşmalarının merkezi.', count: '123 mağaza', slab: [0, 0],
-    images: [['img/hero/plaza.jpg', 'Meydan'], ['img/hero/plaza-cafe.jpg', 'Kafe terasları'], ['img/hero/arcade.jpg', 'Arkad'], ['img/hero/plaza-piano.jpg', 'Su öğesi ve sahne']] },
+    images: [['img/hero/plaza.jpg', 'Meydan'], ['img/hero/plaza-cafe.jpg', 'Kafe terasları'], ['img/hero/arcade.jpg', 'Cadde'], ['img/hero/plaza-piano.jpg', 'Açık hava buluşmaları']] },
   { id: 'b1', level: 'B1', name: 'Bodrum mağazaları', desc: 'Birinci bodrumda 23 mağaza.', count: '23 mağaza', slab: [-1, -1],
     images: [['img/galeri/galeri-05.jpg', 'Cadde mağazaları'], ['img/galeri/galeri-07.jpg', 'Vitrinler']] },
   { id: 'parking', level: 'B2–B3', name: 'Kapalı otopark', desc: 'Her bağımsız bölüme 2 kapalı yer.', count: '1.041 araçlık', slab: [-3, -2],

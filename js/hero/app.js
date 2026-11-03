@@ -10,7 +10,7 @@ import {
   BRAND, PROJECT, BLOCKS, BLOCK_ORDER, ANGLES, TIMES, PLAN_IMG, PLAN_RATIO, PLAN_CORE, UNIT_LAYOUT, COMBINATIONS,
   STATUS, unitsOf, floorInfo, floorsOf, totals, findUnit, AMENITIES, PLACES, SITE_POS,
   DESIGN_POINTS, GALLERY, INTERIORS,
-} from './data.js?v=5';
+} from './data.js?v=6';
 
 const gsap = window.gsap;
 const hero = document.getElementById('vtHero');
