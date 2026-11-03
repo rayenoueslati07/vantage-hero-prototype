@@ -32,6 +32,7 @@ Open **http://localhost:5173** in Chrome or Edge at ≥ 1280 px width (desktop o
 |---|---|
 | Landing: serif wordmark, "Enter", angle caption | `VANTAGE` landing → **Keşfet** |
 | Tower: floor stack left, hover → floor band + tooltip on the building | Floor stack (A/B/C/D × 8 floors + ground), hover highlights the floor on the render |
+| (client request) pick floors on the building itself | Hover any visible floor on the render → it highlights following the facade; click → selected (gold), sidebar row and info tooltip follow; click again or **Katı aç** → floor plan |
 | Day / sunset / night, rotate camera angles | Gündüz · Altın saat · Gece; 6 camera angles (aerial, top-down, street, plaza, boulevard, close-up) |
 | Click floor → floor plan page (cream plan card + unit table) | Catalogue B-block full-floor plan, hover-linked table, sample prices |
 | Click unit → residence page (hero, key facts, plan 2D, view, interiors, book) | Office page with the same sections and the site's own "Bilgi Formu" modal as CTA |
@@ -57,6 +58,8 @@ img/galeri/           the live site's gallery (53 images)
 serve.js              zero-dependency static server (answers /api/config.php with {})
 tools/verify.js       Playwright screenshot pass → demo/shots/
 tools/record-demo.js  Playwright walkthrough recording → demo/vantage-hero-desktop*.mp4
+tools/verify-floorclick.js  hover + click every visible floor in every traced view, checks band/sidebar/tooltip sync
+tools/record-floorclick.js  short floor-click recording → demo/vantage-floor-click-demo*.mp4
 demo/compare/         reel-vs-prototype comparison page (index.html); rendered copy at demo/reel-vs-prototype.png
 ```
 
@@ -70,8 +73,10 @@ node tools/record-demo.js    # videos → demo/
 
 ## Known limitations (asset-driven)
 
-* **No 3D model.** Camera angles are the client's six renders; floors are perspective-mapped bands traced on
-  each facade. Blocks hidden behind another block in an angle say so in the tooltip.
+* **No 3D model.** Camera angles are the client's six renders; floors are perspective-mapped bands measured from the
+  slab edges of each facade (`cols` in `js/hero/data.js`), with podium parapets as occluders. Direct floor picking works
+  in the four views with traced facades (Güneydoğudan, Caddeden, Bulvardan, Yakın plan); top-down and plaza keep the
+  sidebar-only selection. Floors hidden behind another block or a podium are not clickable and say so in the tooltip.
 * **Golden-hour and night** exist as real renders only for the main aerial; the other angles are colour-graded.
 * **Horizon views** are frames from the client's drone orbit (hazy autumn day, construction site below the
   frame line), not renders. The floor slider scales/shifts the same frame.

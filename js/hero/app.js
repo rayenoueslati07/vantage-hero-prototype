@@ -10,7 +10,7 @@ import {
   BRAND, PROJECT, BLOCKS, BLOCK_ORDER, ANGLES, TIMES, PLAN_IMG, PLAN_RATIO, PLAN_CORE, UNIT_LAYOUT, COMBINATIONS,
   STATUS, unitsOf, floorInfo, floorsOf, totals, findUnit, DIRECTIONS, unitsFacing, AMENITIES, PLACES, SITE_POS,
   DESIGN_POINTS, GALLERY, INTERIORS,
-} from './data.js';
+} from './data.js?v=3';
 
 const gsap = window.gsap;
 const hero = document.getElementById('vtHero');
@@ -18,7 +18,6 @@ const SVGNS = 'http://www.w3.org/2000/svg';
 const fmt = n => n.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const fmtInt = n => n.toLocaleString('tr-TR');
 const money = n => '₺ ' + fmtInt(n);
-const lerp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const h = String.raw;
 
@@ -209,8 +208,12 @@ function selectFloor(block, floor, scroll = false) {
   S.sel = { block, floor };
   floorsList.querySelectorAll('.alt-frow').forEach(li => li.classList.toggle('is-sel', li.dataset.block === block && Number(li.dataset.floor) === floor));
   if (scroll) {
+    // centre the row inside the floor list only (scrollIntoView would also scroll the page)
     const li = floorsList.querySelector(`.alt-frow[data-block="${block}"][data-floor="${floor}"]`);
-    if (li) li.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    if (li) {
+      const lr = floorsList.getBoundingClientRect(), r = li.getBoundingClientRect();
+      floorsList.scrollBy({ top: (r.top - lr.top) - (lr.height - r.height) / 2, behavior: 'smooth' });
+    }
   }
   paintFloor();
 }
@@ -218,6 +221,51 @@ function clearSel() {
   S.sel = null;
   floorsList.querySelectorAll('.alt-frow').forEach(li => li.classList.remove('is-sel'));
   paintFloor();
+}
+
+/* ---- traced facades: a block is a chain of columns [x, roofLine, floor1Line]
+ * (see data.js); floor f is the band between floor lines 8-f and 9-f. */
+const lineY = (col, k) => col[1] + (col[2] - col[1]) * k / 8;
+function strip(cols, k0, k1) {
+  return [...cols.map(c => [c[0], lineY(c, k0)]), ...cols.slice().reverse().map(c => [c[0], lineY(c, k1)])];
+}
+const bandPoly = (cols, floor) => strip(cols, 8 - floor, 9 - floor);
+function colAt(cols, x) {
+  if (x < cols[0][0] || x > cols[cols.length - 1][0]) return null;
+  for (let i = 1; i < cols.length; i++) {
+    const a = cols[i - 1], b = cols[i];
+    if (x <= b[0]) { const t = (x - a[0]) / (b[0] - a[0] || 1); return [x, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]; }
+  }
+  return null;
+}
+function inPoly([x, y], poly) {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [xi, yi] = poly[i], [xj, yj] = poly[j];
+    if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+}
+const traced = a => Object.entries(a.blocks).filter(([, g]) => g.cols && !g.behind);
+/* which floor is under the image point (0..1)? Structures in front (occluders)
+ * and nearer blocks win; hidden floors and hidden parts return null. */
+function facadeHit(x, y) {
+  const a = ANGLES[S.angle];
+  if ((a.occluders || []).some(o => inPoly([x, y], o))) return null;
+  const blocks = traced(a).sort((p, q) => (q[1].z || 0) - (p[1].z || 0));
+  for (const [id, g] of blocks) {
+    const c = colAt(g.cols, x);
+    if (!c || y < c[1] || y > c[2]) continue;
+    const floor = 8 - Math.min(7, Math.floor((y - c[1]) / (c[2] - c[1]) * 8));
+    return (g.hidden || []).includes(floor) ? null : { block: id, floor };
+  }
+  return null;
+}
+/* shapes drawn in front of a block: occluders + silhouettes of nearer blocks */
+function occludersOf(blockId) {
+  const a = ANGLES[S.angle];
+  const z = a.blocks[blockId].z || 0;
+  return [...(a.occluders || []), ...traced(a).filter(([id, g]) => id !== blockId && (g.z || 0) > z).map(([, g]) => strip(g.cols, 0, 8))];
 }
 
 /* floor → band polygon + anchor point for the current angle */
@@ -228,24 +276,16 @@ function floorGeom(block, floor) {
   const behind = g.behind;
   if (behind) g = a.blocks[behind];
   const hidden = (g.hidden || []).includes(floor);
-  const polys = [];
   let point;
   if (floor === 0) {
     const b = g.box;
     point = [g.tip === 'right' ? b[2] : b[0], b[3] + 0.02];
-    return { point, polys, side: g.tip, note: 'Zemin · mağazalar', behind, hidden: false };
+    return { point, polys: [], side: g.tip, note: 'Zemin · mağazalar', behind, hidden: false };
   }
-  if (g.faces && !behind) {
-    const n = 8, i = n - floor;
-    Object.values(g.faces).forEach(face => {
-      const [tl, tr, br, bl] = face;
-      polys.push([lerp(tl, bl, i / n), lerp(tr, br, i / n), lerp(tr, br, (i + 1) / n), lerp(tl, bl, (i + 1) / n)]);
-    });
-    const [tl, tr, br, bl] = g.faces.front;
-    const mid = (i + 0.5) / n;
-    point = g.tip === 'right' ? (g.faces.side ? lerp(g.faces.side[1], g.faces.side[2], mid) : lerp(tr, br, mid)) : lerp(tl, bl, mid);
-    if (hidden) return { point, polys: [], side: g.tip, hidden: true, behind };
-    return { point, polys, side: g.tip, hidden: false, behind };
+  if (g.cols && !behind) {
+    const c = g.tip === 'right' ? g.cols[g.cols.length - 1] : g.cols[0];
+    point = [c[0], lineY(c, 8.5 - floor)];
+    return { point, polys: hidden ? [] : [bandPoly(g.cols, floor)], side: g.tip, hidden, behind };
   }
   // box fallback (plan view, angles without traced facades)
   const [x0, y0, x1, y1] = g.box;
@@ -255,21 +295,39 @@ function floorGeom(block, floor) {
   return { point, polys: [], side: g.tip, hidden: a.id === 'topdown', behind, planView: a.id === 'topdown' };
 }
 
+const sameFloor = (p, q) => !!p && !!q && p.block === q.block && p.floor === q.floor;
 function paintFloor() {
   if (!metrics) return;
   const t = S.hover || S.sel;
   ovEl.innerHTML = '';
+  floorsList.querySelectorAll('.alt-frow').forEach(li => li.classList.toggle('is-hot', !!S.hover && li.dataset.block === S.hover.block && Number(li.dataset.floor) === S.hover.floor));
   if (!t || S.screen !== 'tower') { tipEl.hidden = true; return; }
   const geom = floorGeom(t.block, t.floor);
   if (!geom) { tipEl.hidden = true; return; }
   const a = ANGLES[S.angle];
   const vbh = 1000 * a.h / a.w;
-  // outline of the whole block (subtle) when selected
-  geom.polys.forEach((poly, idx) => {
-    const p = document.createElementNS(SVGNS, 'polygon');
-    p.setAttribute('class', 'alt-band' + (idx === 0 ? ' is-front' : ''));
-    p.setAttribute('points', poly.map(([x, y]) => `${(x * 1000).toFixed(2)},${(y * vbh).toFixed(2)}`).join(' '));
-    ovEl.appendChild(p);
+  const pts = poly => poly.map(([x, y]) => `${(x * 1000).toFixed(2)},${(y * vbh).toFixed(2)}`).join(' ');
+  // selected floor stays highlighted; the hovered floor gets a lighter band on top
+  const bands = [];
+  if (S.sel) bands.push([S.sel, 'is-sel']);
+  if (S.hover && !sameFloor(S.hover, S.sel)) bands.push([S.hover, 'is-hover']);
+  bands.forEach(([f, cls]) => {
+    const fg = floorGeom(f.block, f.floor);
+    if (!fg || !fg.polys.length) return;
+    const grp = document.createElementNS(SVGNS, 'g');
+    const occ = occludersOf(f.block);
+    if (occ.length) {   // mask out podiums / nearer blocks in front of this floor
+      const id = `altMask${f.block}${cls}`;
+      ovEl.insertAdjacentHTML('afterbegin', `<defs><mask id="${id}" maskUnits="userSpaceOnUse" x="-200" y="-200" width="1400" height="${vbh + 400}"><rect x="-200" y="-200" width="1400" height="${vbh + 400}" fill="#fff"/>${occ.map(o => `<polygon points="${pts(o)}" fill="#000"/>`).join('')}</mask></defs>`);
+      grp.setAttribute('mask', `url(#${id})`);
+    }
+    fg.polys.forEach(poly => {
+      const p = document.createElementNS(SVGNS, 'polygon');
+      p.setAttribute('class', `alt-band ${cls}`);
+      p.setAttribute('points', pts(poly));
+      grp.appendChild(p);
+    });
+    ovEl.appendChild(grp);
   });
   // tooltip
   const block = BLOCKS[t.block];
@@ -968,9 +1026,40 @@ function toggleFilters(force) {
   pop.hidden = force === undefined ? !pop.hidden : !force;
 }
 
+/* direct floor picking on the render: hover highlights the floor under the
+ * cursor, click selects it (sidebar + info tooltip follow), a second click on
+ * the selected floor opens its plan */
+function hitAt(e) {
+  if (!metrics || S.screen !== 'tower') return null;
+  const r = hero.getBoundingClientRect();
+  return facadeHit((e.clientX - r.left - metrics.x0) / metrics.imgW, (e.clientY - r.top - metrics.y0) / metrics.imgH);
+}
+let facadeHover = null, unhoverT = 0;
+const unhover = () => { clearTimeout(unhoverT); unhoverT = 0; if (facadeHover) { facadeHover = null; hoverFloor(null); } };
+bgEl.addEventListener('pointermove', e => {
+  const hit = hitAt(e);
+  bgEl.classList.toggle('is-hit', !!hit);
+  if (hit) {
+    clearTimeout(unhoverT); unhoverT = 0;
+    if (!sameFloor(hit, facadeHover)) { facadeHover = hit; hoverFloor(hit.block, hit.floor); }
+  } else if (facadeHover && !unhoverT) {
+    // short grace period: crossing the gap between two buildings must not flash the selected floor's panel back
+    unhoverT = setTimeout(unhover, 160);
+  }
+});
+bgEl.addEventListener('pointerleave', () => { bgEl.classList.remove('is-hit'); unhover(); });
+
 /* tower chrome events */
 hero.querySelector('.alt-tower').addEventListener('click', e => {
   const btn = e.target.closest('[data-act]');
+  if (!btn && bgEl.contains(e.target)) {
+    const hit = hitAt(e);
+    if (hit) {
+      if (sameFloor(hit, S.sel)) openFloor(hit.block, hit.floor);
+      else selectFloor(hit.block, hit.floor, true);
+      return;
+    }
+  }
   if (!btn) { if (S.sel && !e.target.closest('.alt-floors, .alt-tip')) clearSel(); return; }
   e.stopPropagation();
   const a = btn.dataset.act;
@@ -1029,5 +1118,23 @@ function boot() {
 if (document.readyState === 'complete') boot();
 else window.addEventListener('load', () => setTimeout(boot, 350), { once: true });
 
+/* test helper: a clickable screen point (client px) on the visible part of a floor in the current angle */
+function probeFloor(block, floor, avoid = null) {   // avoid = [left, top, right, bottom] client rect to stay out of
+  const g = ANGLES[S.angle].blocks[block];
+  if (!g || !g.cols || g.behind || !metrics) return null;
+  const r = hero.getBoundingClientRect(), c0 = g.cols[0][0], c1 = g.cols[g.cols.length - 1][0], ok = [];
+  for (const v of [0.5, 0.3, 0.7, 0.15]) {   // band middle first, then towards its edges
+    for (let i = 1; i < 60; i++) {
+      const x = c0 + (c1 - c0) * i / 60, c = colAt(g.cols, x), y = lineY(c, 8 - floor + v);
+      const px = r.left + metrics.x0 + x * metrics.imgW, py = r.top + metrics.y0 + y * metrics.imgH;
+      if (px < r.left + 200 || px > r.right - 110 || py < r.top + 170 || py > r.bottom - 100) continue;
+      if (avoid && px > avoid[0] && px < avoid[2] && py > avoid[1] && py < avoid[3]) continue;
+      if (sameFloor(facadeHit(x, y), { block, floor }) && document.elementFromPoint(px, py)?.closest('.alt-bg')) ok.push([px, py]);
+    }
+    if (ok.length) break;
+  }
+  return ok.length ? ok[Math.floor(ok.length / 2)] : null;
+}
+
 window.vtHero = { S, go, back, enter, hoverFloor, selectFloor, openFloor, setAngle, setTime, setDir, selectStack, openViewer, closeViewer,
-  setViewFloor: f => { S.view.floor = f; updateView(true); }, clearSel };
+  setViewFloor: f => { S.view.floor = f; updateView(true); }, clearSel, facadeHit, probeFloor };

@@ -119,9 +119,11 @@
 .alt-bgimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.9s ease; will-change: opacity; }
 .alt-bgimg.is-active { opacity: 1; }
 .alt-ov { position: absolute; pointer-events: none; overflow: visible; }
-.alt-band { fill: rgba(255, 244, 214, 0.34); stroke: #fff; stroke-width: 1.2; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 6px rgba(255,255,255,0.55)); }
-.alt-band.is-front { fill: rgba(255, 244, 214, 0.42); }
+.alt-bg.is-hit { cursor: pointer; }
+.alt-band { fill: rgba(255, 244, 214, 0.34); stroke: #fff; stroke-width: 1.2; stroke-linejoin: round; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 6px rgba(255,255,255,0.55)); }
+.alt-band.is-sel { fill: rgba(201, 166, 106, 0.42); stroke: #f4e2b8; stroke-width: 1.6; filter: drop-shadow(0 0 8px rgba(201,166,106,0.8)); }
 .is-night .alt-band { fill: rgba(255, 236, 190, 0.5); }
+.is-night .alt-band.is-sel { fill: rgba(214, 181, 116, 0.58); }
 .alt-tower::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgba(6,13,24,0.55) 0%, rgba(6,13,24,0) 30%); }
 
 /* floor stack */
@@ -143,7 +145,7 @@
   display: grid; grid-template-columns: 22px 1fr; align-items: center; gap: 8px; height: 24px; padding: 0 6px; border-radius: 12px; cursor: pointer; outline: none;
   transition: background 0.2s ease;
 }
-.alt-frow:hover, .alt-frow:focus-visible { background: rgba(255,255,255,0.1); }
+.alt-frow:hover, .alt-frow:focus-visible, .alt-frow.is-hot { background: rgba(255,255,255,0.1); }
 .alt-frow.is-sel { background: #fff; color: #10182a; }
 .alt-frow.is-sel .alt-dot.d-sold { opacity: 0.35; }
 .alt-frow .n { font-size: 11.5px; font-weight: 600; text-align: right; letter-spacing: 0.02em; }
@@ -171,6 +173,7 @@
 .alt-tip-open svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; }
 .alt-tip-open:hover { opacity: 1; }
 .alt-tip:not(.is-sel) .alt-tip-open { display: none; }
+.alt-tip:not(.is-sel) { pointer-events: none; }   /* hover tooltips never block the facade under them */
 
 /* time of day */
 .alt-times { position: absolute; z-index: 5; right: var(--alt-right); top: var(--alt-top); display: flex; gap: 4px; padding: 4px; border-radius: 22px; background: var(--alt-panel); border: 1px solid var(--alt-line); backdrop-filter: blur(12px); opacity: 0; }
